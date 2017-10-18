@@ -5,19 +5,27 @@
 
     <div id="simon">
 
-      <div class="row">
-        <div id="green" class="button col" v-on:click="captureTap('green')"></div>
-        <div id="red" class="button col" v-on:click="captureTap('red')"></div>
+      <div id="status">
+        ???
       </div>
 
       <div class="row">
-        <div id="yellow" class="button col" v-on:click="captureTap('yellow')"></div>
-        <div id="blue" class="button col" v-on:click="captureTap('blue')"></div>
+        <div id="green" class="light col" v-on:click="captureTap('green')"></div>
+        <div id="red" class="light col" v-on:click="captureTap('red')"></div>
+      </div>
+
+      <div class="row">
+        <div id="yellow" class="light col" v-on:click="captureTap('yellow')"></div>
+        <div id="blue" class="light col" v-on:click="captureTap('blue')"></div>
       </div>
 
     </div>
 
-    <div id="status">
+    <div id="controls" class="row">
+      <div class="col"><button class="start" v-on:click="start">Start</button></div>
+    </div>
+
+    <div id="history">
       <p><strong>Current Sequence:</strong> {{ current }}</p>
       <p><strong>Longest Sequence:</strong> {{ longest }}</p>
     </div>
@@ -30,10 +38,15 @@ export default {
   name: 'app',
   data () {
     return {
-      current: 0,
       longest: 0,
       sequence: [],
-      taps: []
+      taps: [],
+      lights: [ 'red', 'green', 'yellow', 'blue' ]
+    }
+  },
+  computed: {
+    current: function() {
+      return this.sequence.length;
     }
   },
   mounted() {
@@ -41,8 +54,21 @@ export default {
   },
   methods: {
 
-    addToSequence: function() {
+    start: function() {
+      this.sequence = [];
+      this.addToSequence();
+      this.playSequence();
+      this.startTime();
+    },
 
+    chooseRandomLight: function() {
+      var index = Math.floor(Math.random() * 4);
+      console.log(index);
+      return this.lights[index];
+    },
+
+    addToSequence: function() {
+      this.sequence.push(this.chooseRandomLight());
     },
 
     playSequence: function() {
@@ -51,9 +77,11 @@ export default {
 
     captureTap: function() {
 
+    },
+
+    startTimer: function() {
+
     }
-
-
 
   }
 }
@@ -91,6 +119,14 @@ a {
   padding: 20px;
 }
 
+#controls {
+  padding-bottom: 20px;
+}
+
+#status {
+  padding-bottom: 20px;
+}
+
 .row {
 
 }
@@ -99,34 +135,47 @@ a {
   display: inline-block;
 }
 
-.button {
+.start {
+  padding: 10px;
+  font-size: 18px;
+}
+
+.light {
   margin: 20px;
+  border: 1px solid #000;
 }
 
 #red {
   height: 100px;
   width: 100px;
   background: #E53A40;
+  opacity: 0.1;
 }
 
 #yellow {
   height: 100px;
   width: 100px;
   background: #EFDC05;
+  opacity: 0.1;
 }
 
 #green {
   height: 100px;
   width: 100px;
   background: #75D701;
+  opacity: 0.1;
 }
 
 #blue {
   height: 100px;
   width: 100px;
   background: #30A9DE;
+  opacity: 0.1;
 }
 
+.bright {
+  opacity: 1.0 !important;
+}
 
 
 
