@@ -6,13 +6,13 @@
     <div id="simon">
 
       <div class="row">
-        <div id="green" class="button col"></div>
-        <div id="red" class="button col"></div>
+        <div id="green" class="button col" v-on:click="captureTap('green')"></div>
+        <div id="red" class="button col" v-on:click="captureTap('red')"></div>
       </div>
 
       <div class="row">
-        <div id="yellow" class="button col"></div>
-        <div id="blue" class="button col"></div>
+        <div id="yellow" class="button col" v-on:click="captureTap('yellow')"></div>
+        <div id="blue" class="button col" v-on:click="captureTap('blue')"></div>
       </div>
 
     </div>
@@ -30,7 +30,31 @@ export default {
   name: 'app',
   data () {
     return {
+      current: 0,
+      longest: 0,
+      sequence: [],
+      taps: []
     }
+  },
+  mounted() {
+
+  },
+  methods: {
+
+    addToSequence: function() {
+
+    },
+
+    playSequence: function() {
+
+    },
+
+    captureTap: function() {
+
+    }
+
+
+
   }
 }
 </script>
