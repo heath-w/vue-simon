@@ -5,9 +5,7 @@
 
     <div id="simon">
 
-      <div id="status">
-        ???
-      </div>
+      <timer></timer>
 
       <div class="row">
         <div id="green" class="light col" v-on:click="captureTap('green')"></div>
@@ -34,16 +32,22 @@
 </template>
 
 <script>
+import timer from './Timer.vue';
+
 export default {
   name: 'app',
+  components: { timer },
   data () {
     return {
       longest: 0,
       sequence: [],
       taps: [],
-      lights: [ 'red', 'green', 'yellow', 'blue' ]
+      lights: [ 'red', 'green', 'yellow', 'blue' ],
+      timerIsActive: false,
+      timerLength: 10
     }
   },
+
   computed: {
     current: function() {
       return this.sequence.length;
@@ -54,11 +58,40 @@ export default {
   },
   methods: {
 
+    changeState: function( newState ) {
+      switch( newState ) {
+        case 'ready':
+          this.timerIsActive = false;
+          this.$bus.$emit( 'stateChange', 'ready' );
+          break;
+        case 'playing':
+          this.timerIsActive = false;
+          this.$bus.$emit( 'stateChange', 'playing' );
+          break;  
+        case 'capturing':
+          this.timerIsActive = true;
+          this.$bus.$emit( 'stateChange', 'capturing', this.timerLength );
+          break;
+        case 'processing':
+          this.timerIsActive = false;
+          this.$bus.$emit( 'stateChange', 'processing' );
+          break; 
+        case 'gameover':
+          this.timerIsActive = false;
+          this.$bus.$emit( 'stateChange', 'gameover' );
+          break;  
+        default:
+          console.log( 'changeState: event state unknown: ', $event ); 
+      }
+    },
+
     start: function() {
+
       this.sequence = [];
       this.addToSequence();
       this.playSequence();
-      this.startTime();
+
+      
     },
 
     chooseRandomLight: function() {
@@ -78,10 +111,6 @@ export default {
     captureTap: function() {
 
     },
-
-    startTimer: function() {
-
-    }
 
   }
 }
