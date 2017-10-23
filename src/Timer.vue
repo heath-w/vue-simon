@@ -19,6 +19,7 @@
 	    return {
 	      message: 'Click the start button to begin!',
 	      remaining: '',
+	      intervalId: null
 	    }
 	  },
 
@@ -44,13 +45,35 @@
 	  },
 
 	  methods: {
-	  	startTimer: function() {
-
-	  		setInterval( this.tick, 1000 );
+	  	startTimer: function( timerLength ) {
+	  		if ( this.intervalId === null ) {
+	  			this.message = '';
+	  			this.remaining = timerLength;
+	  			this.intervalId = window.setInterval( this.tick, 1000 );
+	  		}
+	  		else { }	  		
 	  	},
-	  	stopTimer: function() {},	  	
+
+	  	stopTimer: function( text ) {
+	  		window.clearInterval( this.intervalId );
+	  		this.intervalId = null;
+	  		this.remaining = '';
+	  		if ( text ) {
+	  			this.message = text;	
+	  		}
+	  		else {
+	  			this.message = '';
+	  		}	  		
+	  	},	  	
+
 	  	tick: function() {
-	  		console.log( 'tick' );
+	  		console.log( 'tick (Spoon!)' );
+	  		this.remaining -= 1;	  	
+	  		if ( this.remaining === 0 ) {
+	  			this.$bus.$emit( 'expired' );
+	  			window.clearInterval( this.intervalId );
+	  			this.intervalId = null;
+	  		}	
 	  	}
 	  }
 	}

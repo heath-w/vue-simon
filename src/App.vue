@@ -8,13 +8,13 @@
       <timer></timer>
 
       <div class="row">
-        <div id="green" class="light col" v-on:click="captureTap('green')"></div>
-        <div id="red" class="light col" v-on:click="captureTap('red')"></div>
+        <div id="green" class="light col noSelect" v-bind:class="{ 'bright': currentButton === 'green' }" v-on:click="captureTap('green')"></div>
+        <div id="red" class="light col noSelect" v-bind:class="{ 'bright': currentButton === 'red' }" v-on:click="captureTap('red')"></div>
       </div>
 
       <div class="row">
-        <div id="yellow" class="light col" v-on:click="captureTap('yellow')"></div>
-        <div id="blue" class="light col" v-on:click="captureTap('blue')"></div>
+        <div id="yellow" class="light col noSelect" v-bind:class="{ 'bright': currentButton === 'yellow' }" v-on:click="captureTap('yellow')"></div>
+        <div id="blue" class="light col noSelect" v-bind:class="{ 'bright': currentButton === 'blue' }" v-on:click="captureTap('blue')"></div>
       </div>
 
     </div>
@@ -44,7 +44,8 @@ export default {
       taps: [],
       lights: [ 'red', 'green', 'yellow', 'blue' ],
       timerIsActive: false,
-      timerLength: 10
+      timerLength: 10,
+      currentButton: ''
     }
   },
 
@@ -91,7 +92,7 @@ export default {
       this.addToSequence();
       this.playSequence();
 
-      
+
     },
 
     chooseRandomLight: function() {
@@ -105,12 +106,22 @@ export default {
     },
 
     playSequence: function() {
-
+      this.changeState( 'playing' );
+      this.changeState( 'capturing' );
     },
 
-    captureTap: function() {
-
-    },
+    captureTap: function( color ) {
+      console.log( 'captureTap: color: ', color );
+      if ( this.timerIsActive === true ) {
+        this.currentButton = color;
+        window.setTimeout( () => {
+          this.currentButton = '';
+        }, 300 );
+      }
+      else {
+        // ignore the tap!
+      }
+    }
 
   }
 }
@@ -206,6 +217,14 @@ a {
   opacity: 1.0 !important;
 }
 
-
+/* https://stackoverflow.com/questions/21003535/anyway-to-prevent-the-blue-highlighting-of-elements-in-chrome-when-clicking-quic */
+.noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 </style>
