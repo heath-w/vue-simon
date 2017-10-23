@@ -41,6 +41,8 @@ export default {
     return {
       longest: 0,
       sequence: [],
+      playSequenceCounter: 0,
+      playSequenceId: null,
       taps: [],
       lights: [ 'red', 'green', 'yellow', 'blue' ],
       timerIsActive: false,
@@ -114,8 +116,23 @@ export default {
     },
 
     playSequence: function() {
-      this.changeState( 'playing' );
-      this.changeState( 'capturing' );
+      this.playSequenceId = window.setInterval( () => {
+
+        this.changeState( 'playing' );
+        this.currentButton = '';
+        
+        window.setTimeout( () => {
+          this.currentButton = this.sequence[ this.playSequenceCounter++ ];
+          if ( this.playSequenceCounter > this.sequence.length ) {
+            // DONE!
+            window.clearInterval( this.playSequenceId );
+            this.playSequenceId = null;
+            this.playSequenceCounter = 0;
+            this.changeState( 'capturing' );
+          }
+        }, 300 );
+
+      }, 600 );
     },
 
     captureTap: function( color ) {
