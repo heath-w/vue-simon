@@ -52,11 +52,13 @@ export default {
   computed: {
     current: function() {
       return this.sequence.length;
+    },
+
+    tapsMatchesSequence: function() {
+      return true;
     }
   },
-  mounted() {
-
-  },
+  
   methods: {
 
     changeState: function( newState ) {
@@ -112,17 +114,43 @@ export default {
 
     captureTap: function( color ) {
       console.log( 'captureTap: color: ', color );
+
       if ( this.timerIsActive === true ) {
         this.currentButton = color;
         window.setTimeout( () => {
           this.currentButton = '';
         }, 300 );
+
+        this.changeState( 'processing' );
+        this.taps.push( color );
+        if ( this.tapsMatchesSequence === true ) {
+
+          if ( this.taps.length === this.sequence.length ) {
+            // Matches completely
+            this.taps = [];
+            this.addToSequence();
+            this.playSequence();
+            this.changeState( 'capturing' );
+          }
+          else {
+            // Matches so far...
+            this.changeState( 'capturing' );
+          }
+
+        }
+        else {
+          // Taps does not match sequence
+          this.gameOver();
+        }
       }
       else {
         // ignore the tap!
       }
-    }
+    },
 
+    gameOver: function() {
+      alert( 'GAME OVER MAN!' ); 
+    }
   }
 }
 </script>
