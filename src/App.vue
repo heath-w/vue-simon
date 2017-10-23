@@ -55,8 +55,16 @@ export default {
     },
 
     tapsMatchesSequence: function() {
-      return true;
+      let partialSequence = this.sequence.slice( 0, this.taps.length );
+      // Cheat for simple array because I know everything
+      return JSON.stringify( this.taps ) == JSON.stringify( partialSequence );
     }
+  },
+
+  created () {
+    this.$bus.$on( 'expired', ( $event ) => {
+      this.gameOver();
+    } );
   },
   
   methods: {
@@ -89,12 +97,9 @@ export default {
     },
 
     start: function() {
-
       this.sequence = [];
       this.addToSequence();
       this.playSequence();
-
-
     },
 
     chooseRandomLight: function() {
@@ -105,6 +110,7 @@ export default {
 
     addToSequence: function() {
       this.sequence.push(this.chooseRandomLight());
+      console.log( 'addToSequence: sequence: ', this.sequence );
     },
 
     playSequence: function() {
@@ -117,13 +123,16 @@ export default {
 
       if ( this.timerIsActive === true ) {
         this.currentButton = color;
+
         window.setTimeout( () => {
           this.currentButton = '';
         }, 300 );
 
         this.changeState( 'processing' );
+
         this.taps.push( color );
-        if ( this.tapsMatchesSequence === true ) {
+
+        if ( this.tapsMatchesSequence == true ) {
 
           if ( this.taps.length === this.sequence.length ) {
             // Matches completely
@@ -142,14 +151,22 @@ export default {
           // Taps does not match sequence
           this.gameOver();
         }
-      }
+      } // END this.timerIsActive === true
       else {
         // ignore the tap!
       }
     },
 
     gameOver: function() {
-      alert( 'GAME OVER MAN!' ); 
+      console.log( 'GAME OVER MAN!' ); 
+      this.changeState( 'gameover' );
+      this.taps = [];
+
+      if ( this.longest < this.sequence.length ) {
+        this.longest = this.sequence.length;
+      }
+
+
     }
   }
 }
